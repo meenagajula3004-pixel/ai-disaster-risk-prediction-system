@@ -1,567 +1,147 @@
 {
-  "flood": [
-    {
-      "disaster": "flood",
-      "model_name": "LogisticRegression",
-      "accuracy": 0.9178,
-      "precision": 0.9181,
-      "recall": 0.9178,
-      "high_risk_recall": 0.8816,
-      "critical_risk_recall": 0.7619,
-      "f1_score": 0.917,
-      "roc_auc": 0.9876,
-      "confusion_matrix": [
-        [
-          552,
-          17,
-          0,
-          0
-        ],
-        [
-          30,
-          191,
-          13,
-          0
-        ],
-        [
-          0,
-          8,
-          67,
-          1
-        ],
-        [
-          0,
-          0,
-          5,
-          16
-        ]
-      ]
-    },
-    {
-      "disaster": "flood",
-      "model_name": "RandomForest",
-      "accuracy": 0.9478,
-      "precision": 0.9475,
-      "recall": 0.9478,
-      "high_risk_recall": 0.8421,
-      "critical_risk_recall": 0.7143,
-      "f1_score": 0.9472,
-      "roc_auc": 0.9966,
-      "confusion_matrix": [
-        [
-          561,
-          8,
-          0,
-          0
-        ],
-        [
-          15,
-          213,
-          6,
-          0
-        ],
-        [
-          0,
-          11,
-          64,
-          1
-        ],
-        [
-          0,
-          0,
-          6,
-          15
-        ]
-      ]
-    },
-    {
-      "disaster": "flood",
-      "model_name": "GradientBoosting",
-      "accuracy": 0.9744,
-      "precision": 0.9746,
-      "recall": 0.9744,
-      "high_risk_recall": 0.9211,
-      "critical_risk_recall": 0.8571,
-      "f1_score": 0.9744,
-      "roc_auc": 0.9974,
-      "confusion_matrix": [
-        [
-          565,
-          4,
-          0,
-          0
-        ],
-        [
-          6,
-          224,
-          4,
-          0
-        ],
-        [
-          0,
-          6,
-          70,
-          0
-        ],
-        [
-          0,
-          0,
-          3,
-          18
-        ]
-      ]
-    }
-  ],
-  "landslide": [
-    {
-      "disaster": "landslide",
-      "model_name": "LogisticRegression",
-      "accuracy": 0.9844,
-      "precision": 0.9845,
-      "recall": 0.9844,
-      "high_risk_recall": 0.9632,
-      "critical_risk_recall": 0.95,
-      "f1_score": 0.9844,
-      "roc_auc": 0.9996,
-      "confusion_matrix": [
-        [
-          317,
-          5,
-          0,
-          0
-        ],
-        [
-          1,
-          400,
-          1,
-          0
-        ],
-        [
-          0,
-          4,
-          131,
-          1
-        ],
-        [
-          0,
-          0,
-          2,
-          38
-        ]
-      ]
-    },
-    {
-      "disaster": "landslide",
-      "model_name": "RandomForest",
-      "accuracy": 0.93,
-      "precision": 0.9311,
-      "recall": 0.93,
-      "high_risk_recall": 0.9044,
-      "critical_risk_recall": 0.8,
-      "f1_score": 0.9299,
-      "roc_auc": 0.995,
-      "confusion_matrix": [
-        [
-          298,
-          24,
-          0,
-          0
-        ],
-        [
-          12,
-          384,
-          6,
-          0
-        ],
-        [
-          0,
-          12,
-          123,
-          1
-        ],
-        [
-          0,
-          0,
-          8,
-          32
-        ]
-      ]
-    },
-    {
-      "disaster": "landslide",
-      "model_name": "GradientBoosting",
-      "accuracy": 0.9644,
-      "precision": 0.9645,
-      "recall": 0.9644,
-      "high_risk_recall": 0.9412,
-      "critical_risk_recall": 0.9,
-      "f1_score": 0.9644,
-      "roc_auc": 0.9987,
-      "confusion_matrix": [
-        [
-          318,
-          4,
-          0,
-          0
-        ],
-        [
-          12,
-          386,
-          4,
-          0
-        ],
-        [
-          0,
-          6,
-          128,
-          2
-        ],
-        [
-          0,
-          0,
-          4,
-          36
-        ]
-      ]
-    }
-  ],
-  "cyclone": [
-    {
-      "disaster": "cyclone",
-      "model_name": "LogisticRegression",
-      "accuracy": 0.9744,
-      "precision": 0.9751,
-      "recall": 0.9744,
-      "high_risk_recall": 0.9848,
-      "critical_risk_recall": 0.8941,
-      "f1_score": 0.9744,
-      "roc_auc": 0.9994,
-      "confusion_matrix": [
-        [
-          151,
-          1,
-          0,
-          0
-        ],
-        [
-          3,
-          391,
-          6,
-          0
-        ],
-        [
-          0,
-          4,
-          259,
-          0
-        ],
-        [
-          0,
-          0,
-          9,
-          76
-        ]
-      ]
-    },
-    {
-      "disaster": "cyclone",
-      "model_name": "RandomForest",
-      "accuracy": 0.89,
-      "precision": 0.8951,
-      "recall": 0.89,
-      "high_risk_recall": 0.9163,
-      "critical_risk_recall": 0.5059,
-      "f1_score": 0.8851,
-      "roc_auc": 0.9881,
-      "confusion_matrix": [
-        [
-          134,
-          18,
-          0,
-          0
-        ],
-        [
-          5,
-          383,
-          12,
-          0
-        ],
-        [
-          0,
-          19,
-          241,
-          3
-        ],
-        [
-          0,
-          0,
-          42,
-          43
-        ]
-      ]
-    },
-    {
-      "disaster": "cyclone",
-      "model_name": "GradientBoosting",
-      "accuracy": 0.9589,
-      "precision": 0.9605,
-      "recall": 0.9589,
-      "high_risk_recall": 0.9848,
-      "critical_risk_recall": 0.7882,
-      "f1_score": 0.9582,
-      "roc_auc": 0.9967,
-      "confusion_matrix": [
-        [
-          148,
-          4,
-          0,
-          0
-        ],
-        [
-          7,
-          389,
-          4,
-          0
-        ],
-        [
-          0,
-          4,
-          259,
-          0
-        ],
-        [
-          0,
-          0,
-          18,
-          67
-        ]
-      ]
-    }
-  ],
-  "heatwave": [
-    {
-      "disaster": "heatwave",
-      "model_name": "LogisticRegression",
-      "accuracy": 0.9733,
-      "precision": 0.9732,
-      "recall": 0.9733,
-      "high_risk_recall": 0.9724,
-      "critical_risk_recall": 0.9655,
-      "f1_score": 0.9724,
-      "roc_auc": 0.9983,
-      "confusion_matrix": [
-        [
-          603,
-          1,
-          0,
-          0
-        ],
-        [
-          7,
-          48,
-          9,
-          0
-        ],
-        [
-          0,
-          2,
-          141,
-          2
-        ],
-        [
-          0,
-          0,
-          3,
-          84
-        ]
-      ]
-    },
-    {
-      "disaster": "heatwave",
-      "model_name": "RandomForest",
-      "accuracy": 0.95,
-      "precision": 0.952,
-      "recall": 0.95,
-      "high_risk_recall": 0.9379,
-      "critical_risk_recall": 0.8736,
-      "f1_score": 0.9482,
-      "roc_auc": 0.9942,
-      "confusion_matrix": [
-        [
-          603,
-          1,
-          0,
-          0
-        ],
-        [
-          6,
-          40,
-          18,
-          0
-        ],
-        [
-          0,
-          2,
-          136,
-          7
-        ],
-        [
-          0,
-          0,
-          11,
-          76
-        ]
-      ]
-    },
-    {
-      "disaster": "heatwave",
-      "model_name": "GradientBoosting",
-      "accuracy": 0.9711,
-      "precision": 0.9712,
-      "recall": 0.9711,
-      "high_risk_recall": 0.9379,
-      "critical_risk_recall": 0.931,
-      "f1_score": 0.971,
-      "roc_auc": 0.9974,
-      "confusion_matrix": [
-        [
-          602,
-          2,
-          0,
-          0
-        ],
-        [
-          2,
-          55,
-          7,
-          0
-        ],
-        [
-          0,
-          2,
-          136,
-          7
-        ],
-        [
-          0,
-          0,
-          6,
-          81
-        ]
-      ]
-    }
-  ],
-  "drought": [
-    {
-      "disaster": "drought",
-      "model_name": "LogisticRegression",
-      "accuracy": 0.9022,
-      "precision": 0.9027,
-      "recall": 0.9022,
-      "high_risk_recall": 0.9254,
-      "critical_risk_recall": 0.9474,
-      "f1_score": 0.902,
+  "flood": {
+    "LogisticRegression": {
+      "accuracy": 0.9011,
+      "precision": 0.9059,
+      "recall": 0.9011,
+      "f1_score": 0.9027,
+      "high_risk_recall": 0.8872,
       "roc_auc": 0.9864,
-      "confusion_matrix": [
-        [
-          184,
-          12,
-          0,
-          0
-        ],
-        [
-          16,
-          211,
-          30,
-          0
-        ],
-        [
-          0,
-          21,
-          273,
-          1
-        ],
-        [
-          0,
-          0,
-          8,
-          144
-        ]
-      ]
+      "selection_score": 0.925
     },
-    {
-      "disaster": "drought",
-      "model_name": "RandomForest",
-      "accuracy": 0.9322,
-      "precision": 0.9335,
-      "recall": 0.9322,
-      "high_risk_recall": 0.9525,
-      "critical_risk_recall": 0.9211,
-      "f1_score": 0.9324,
-      "roc_auc": 0.9949,
-      "confusion_matrix": [
-        [
-          186,
-          10,
-          0,
-          0
-        ],
-        [
-          5,
-          232,
-          20,
-          0
-        ],
-        [
-          0,
-          11,
-          281,
-          3
-        ],
-        [
-          0,
-          0,
-          12,
-          140
-        ]
-      ]
+    "RandomForest": {
+      "accuracy": 0.9556,
+      "precision": 0.9568,
+      "recall": 0.9556,
+      "f1_score": 0.9559,
+      "high_risk_recall": 0.9173,
+      "roc_auc": 0.9972,
+      "selection_score": 0.953
     },
-    {
-      "disaster": "drought",
-      "model_name": "GradientBoosting",
-      "accuracy": 0.96,
-      "precision": 0.9603,
-      "recall": 0.96,
-      "high_risk_recall": 0.9627,
-      "critical_risk_recall": 0.9671,
-      "f1_score": 0.9601,
-      "roc_auc": 0.9985,
-      "confusion_matrix": [
-        [
-          190,
-          6,
-          0,
-          0
-        ],
-        [
-          3,
-          243,
-          11,
-          0
-        ],
-        [
-          0,
-          9,
-          284,
-          2
-        ],
-        [
-          0,
-          0,
-          5,
-          147
-        ]
-      ]
+    "GradientBoosting": {
+      "accuracy": 0.9822,
+      "precision": 0.9825,
+      "recall": 0.9822,
+      "f1_score": 0.9823,
+      "high_risk_recall": 0.9699,
+      "roc_auc": 0.9994,
+      "selection_score": 0.9827
     }
-  ]
+  },
+  "landslide": {
+    "LogisticRegression": {
+      "accuracy": 0.9644,
+      "precision": 0.9658,
+      "recall": 0.9644,
+      "f1_score": 0.9647,
+      "high_risk_recall": 0.9646,
+      "roc_auc": 0.999,
+      "selection_score": 0.9767
+    },
+    "RandomForest": {
+      "accuracy": 0.9267,
+      "precision": 0.9284,
+      "recall": 0.9267,
+      "f1_score": 0.9272,
+      "high_risk_recall": 0.9192,
+      "roc_auc": 0.9924,
+      "selection_score": 0.9464
+    },
+    "GradientBoosting": {
+      "accuracy": 0.9567,
+      "precision": 0.9567,
+      "recall": 0.9567,
+      "f1_score": 0.9566,
+      "high_risk_recall": 0.9141,
+      "roc_auc": 0.9976,
+      "selection_score": 0.9518
+    }
+  },
+  "cyclone": {
+    "LogisticRegression": {
+      "accuracy": 0.97,
+      "precision": 0.9729,
+      "recall": 0.97,
+      "f1_score": 0.9705,
+      "high_risk_recall": 0.958,
+      "roc_auc": 0.9989,
+      "selection_score": 0.9748
+    },
+    "RandomForest": {
+      "accuracy": 0.91,
+      "precision": 0.913,
+      "recall": 0.91,
+      "f1_score": 0.9105,
+      "high_risk_recall": 0.8979,
+      "roc_auc": 0.9866,
+      "selection_score": 0.9314
+    },
+    "GradientBoosting": {
+      "accuracy": 0.9589,
+      "precision": 0.959,
+      "recall": 0.9589,
+      "f1_score": 0.9589,
+      "high_risk_recall": 0.9489,
+      "roc_auc": 0.9968,
+      "selection_score": 0.9677
+    }
+  },
+  "heatwave": {
+    "LogisticRegression": {
+      "accuracy": 0.9622,
+      "precision": 0.9724,
+      "recall": 0.9622,
+      "f1_score": 0.9647,
+      "high_risk_recall": 0.9522,
+      "roc_auc": 0.9994,
+      "selection_score": 0.9712
+    },
+    "RandomForest": {
+      "accuracy": 0.9544,
+      "precision": 0.955,
+      "recall": 0.9544,
+      "f1_score": 0.9546,
+      "high_risk_recall": 0.8852,
+      "roc_auc": 0.9961,
+      "selection_score": 0.9379
+    },
+    "GradientBoosting": {
+      "accuracy": 0.97,
+      "precision": 0.97,
+      "recall": 0.97,
+      "f1_score": 0.97,
+      "high_risk_recall": 0.933,
+      "roc_auc": 0.998,
+      "selection_score": 0.9631
+    }
+  },
+  "drought": {
+    "LogisticRegression": {
+      "accuracy": 0.9056,
+      "precision": 0.9071,
+      "recall": 0.9056,
+      "f1_score": 0.906,
+      "high_risk_recall": 0.9282,
+      "roc_auc": 0.9875,
+      "selection_score": 0.9445
+    },
+    "RandomForest": {
+      "accuracy": 0.9556,
+      "precision": 0.956,
+      "recall": 0.9556,
+      "f1_score": 0.9556,
+      "high_risk_recall": 0.9444,
+      "roc_auc": 0.9967,
+      "selection_score": 0.9649
+    },
+    "GradientBoosting": {
+      "accuracy": 0.9656,
+      "precision": 0.9656,
+      "recall": 0.9656,
+      "f1_score": 0.9655,
+      "high_risk_recall": 0.963,
+      "roc_auc": 0.9979,
+      "selection_score": 0.9757
+    }
+  }
 }

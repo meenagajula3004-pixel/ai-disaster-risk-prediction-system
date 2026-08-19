@@ -1,0 +1,27 @@
+{
+  "dataset_name": "Real-World Hydrometeorological & Multi-Hazard Benchmark (V2)",
+  "sources": [
+    {
+      "name": "NASA Global Landslide Catalog (GLC)",
+      "url": "https://data.nasa.gov/Earth-Science/Global-Landslide-Catalog/h9d8-gfdw",
+      "license": "Public Domain (CC0 / US Government)",
+      "usage": "Provides real historical landslide events with spatial coordinates and triggers"
+    },
+    {
+      "name": "NOAA IBTrACS Tropical Cyclone Database",
+      "url": "https://www.ncei.noaa.gov/products/international-best-track-archive",
+      "license": "Public Domain (US NOAA)",
+      "usage": "Provides tropical cyclone tracks, wind speeds, and atmospheric pressure"
+    },
+    {
+      "name": "Copernicus ERA5 Reanalysis & Open-Meteo Historical Archive",
+      "url": "https://archive-api.open-meteo.com/v1/archive",
+      "license": "CC-BY 4.0 (Copernicus C3S)",
+      "usage": "Provides 7-day historical precipitation windows, temperature, humidity, and pressure"
+    }
+  ],
+  "records": 6000,
+  "time_span": "2018-01-01 to 2024-01-01",
+  "feature_count": 15,
+  "target_count": 5
+}
