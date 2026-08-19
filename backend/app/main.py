@@ -9,6 +9,7 @@ from backend.app.core.config import settings
 from backend.app.core.database import engine, Base
 from backend.app.api.v1.api import api_router
 from backend.app.services.ml_service import load_ml_artifacts
+from backend.app.services.email_service import verify_smtp_connection_safe
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("disaster_risk_api")
@@ -132,8 +133,14 @@ def root_index():
         "status": "Online",
         "version": "3.1.0",
         "docs_url": "/docs",
-        "health_check": "/health"
+        "health_check": "/health",
+        "smtp_diagnostic": "/health/smtp"
     }
+
+@app.get("/health/smtp")
+def smtp_health_diagnostic():
+    """Safe diagnostic endpoint reporting runtime SMTP configuration status & connectivity."""
+    return verify_smtp_connection_safe()
 
 if __name__ == "__main__":
     import uvicorn

@@ -106,7 +106,13 @@ async def register_user(req: UserRegisterRequest, db: Session = Depends(get_db))
         )
 
     # 7. Send OTP via email
-    send_otp_email(clean_email, otp_code, purpose="registration")
+    email_ok, email_msg = send_otp_email(clean_email, otp_code, purpose="registration")
+    if not email_ok:
+        logger.error(f"Registration accepted for {clean_email}, but SMTP delivery failed: {email_msg}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Registration record created, but verification email delivery failed: {email_msg}"
+        )
 
     return {
         "status": "success",
@@ -270,7 +276,13 @@ async def resend_otp(req: OTPResendRequest, db: Session = Depends(get_db)):
             detail=f"Failed to process OTP resend: {str(err)}"
         )
 
-    send_otp_email(clean_email, otp_code, purpose=req.purpose)
+    email_ok, email_msg = send_otp_email(clean_email, otp_code, purpose=req.purpose)
+    if not email_ok:
+        logger.error(f"OTP generated for {clean_email}, but resend email failed: {email_msg}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Verification code generated, but email delivery failed: {email_msg}"
+        )
 
     return {
         "status": "success",
@@ -413,7 +425,13 @@ async def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_
             detail=f"Failed to process password reset request: {str(err)}"
         )
 
-    send_otp_email(clean_email, otp_code, purpose="password_reset")
+    email_ok, email_msg = send_otp_email(clean_email, otp_code, purpose="password_reset")
+    if not email_ok:
+        logger.error(f"Reset OTP generated for {clean_email}, but email delivery failed: {email_msg}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Password reset code generated, but email delivery failed: {email_msg}"
+        )
 
     return {
         "status": "success",
