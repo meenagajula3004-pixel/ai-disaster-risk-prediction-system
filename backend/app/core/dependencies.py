@@ -9,6 +9,15 @@ from backend.app.models.db_models import UserDB
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login", auto_error=False)
 
+def _get_user_by_token_sub(sub_val: str, db: Session) -> UserDB | None:
+    if not sub_val:
+        return None
+    if str(sub_val).isdigit():
+        user = db.query(UserDB).filter(UserDB.id == int(sub_val)).first()
+        if user:
+            return user
+    return db.query(UserDB).filter(UserDB.email == str(sub_val)).first()
+
 def get_optional_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
@@ -18,13 +27,13 @@ def get_optional_current_user(
         return None
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        sub_val = payload.get("email") or payload.get("sub")
+        if not sub_val:
             return None
     except JWTError:
         return None
 
-    user = db.query(UserDB).filter(UserDB.email == email).first()
+    user = _get_user_by_token_sub(sub_val, db)
     if not user or not user.is_active:
         return None
     return user
@@ -42,8 +51,8 @@ def get_current_user(
         )
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        sub_val = payload.get("email") or payload.get("sub")
+        if not sub_val:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token payload.",
@@ -56,7 +65,7 @@ def get_current_user(
             headers={"WWW-Authenticate": "Bearer"}
         )
 
-    user = db.query(UserDB).filter(UserDB.email == email).first()
+    user = _get_user_by_token_sub(sub_val, db)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -67,7 +76,7 @@ def get_current_user(
     if not user.is_verified:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Your email is not verified. Please verify your email before proceeding."
+            detail="Your email is not verified yet. Please verify your OTP."
         )
 
     if not user.is_active:
