@@ -33,8 +33,18 @@ class Settings(BaseSettings):
     OPEN_METEO_BASE_URL: str = "https://api.open-meteo.com/v1"
     OPEN_METEO_GEOCODING_URL: str = "https://geocoding-api.open-meteo.com/v1"
 
-    # CORS
-    ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173"
+    # CORS Allowed Origins Configuration (Supports ALLOWED_ORIGINS, CORS_ORIGINS, or CORS_ORIGIN env vars)
+    ALLOWED_ORIGINS: str = (
+        "https://ai-disaster-risk-prediction-system.vercel.app,"
+        "http://localhost:5173,"
+        "http://127.0.0.1:5173,"
+        "http://localhost:3000,"
+        "http://127.0.0.1:3000,"
+        "http://localhost:4173,"
+        "http://127.0.0.1:4173"
+    )
+    CORS_ORIGINS: str = ""
+    CORS_ORIGIN: str = ""
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -43,6 +53,22 @@ class Settings(BaseSettings):
     )
 
     def get_cors_origins(self) -> List[str]:
-        return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",") if origin.strip()]
+        raw_origins = self.CORS_ORIGINS or self.CORS_ORIGIN or self.ALLOWED_ORIGINS
+        parsed = [origin.strip().rstrip('/') for origin in raw_origins.split(",") if origin.strip()]
+        
+        default_origins = [
+            "https://ai-disaster-risk-prediction-system.vercel.app",
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://localhost:4173",
+            "http://127.0.0.1:4173"
+        ]
+        
+        for d in default_origins:
+            if d not in parsed:
+                parsed.append(d)
+        return parsed
 
 settings = Settings()

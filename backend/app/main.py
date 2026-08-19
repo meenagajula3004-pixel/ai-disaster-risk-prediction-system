@@ -61,6 +61,18 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Configure CORS Middleware BEFORE Security Headers & Routes
+cors_origins = settings.get_cors_origins()
+logger.info(f"Configuring CORS middleware with allowed origins: {cors_origins}")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Security Headers Middleware
 @app.middleware("http")
 async def add_security_headers(request: Request, call_next):
@@ -69,16 +81,6 @@ async def add_security_headers(request: Request, call_next):
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     return response
-
-# CORS middleware configuration
-origins = settings.get_cors_origins()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins if origins else ["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 app.include_router(api_router)
 
