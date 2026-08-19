@@ -147,7 +147,7 @@ def predict_multi_disaster_risk(
                 high_prob = float(probas[2] * 0.65 + probas[3] * 1.0)
             else:
                 high_prob = float(probas[-1])
-            prob_pct = round(min(99.0, max(1.0, high_prob * 100.0)), 1)
+            prob_pct = round(min(99.0, max(0.0, high_prob * 100.0)), 1)
         else:
             # Fallback heuristic formulation if model binary is loading
             if hazard_key == "flood":
