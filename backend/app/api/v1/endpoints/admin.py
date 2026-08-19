@@ -10,7 +10,7 @@ from backend.app.models.schemas import AdminStatsResponse
 
 router = APIRouter()
 
-ML_METRICS_FILE = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "ml", "metrics", "evaluation_report.json")
+ML_METRICS_FILE = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "..", "ml", "metrics", "v31_evaluation_report.json")
 
 @router.get("/admin/stats", response_model=AdminStatsResponse)
 def get_admin_dashboard_stats(db: Session = Depends(get_db)):
@@ -64,12 +64,22 @@ def get_admin_dashboard_stats(db: Session = Depends(get_db)):
             {"id": 3, "location": "Shimla", "primary_hazard": "Landslide Risk", "level": "CRITICAL", "probability": 88.2, "timestamp": "2026-08-19T09:00:00"}
         ]
 
-    # Load ML metrics file if exists
+    # Load V3.1 ML metrics file if exists
     ml_perf = {}
     if os.path.exists(ML_METRICS_FILE):
         try:
             with open(ML_METRICS_FILE, "r") as f:
-                ml_perf = json.load(f)
+                raw_report = json.load(f)
+                hazards = raw_report.get("hazards", {})
+                for h_key, h_data in hazards.items():
+                    test_m = h_data.get("test_metrics", {})
+                    ml_perf[h_key] = {
+                        "selected_model": h_data.get("selected_model", ""),
+                        "test_accuracy": test_m.get("accuracy", 0.0),
+                        "weighted_f1": test_m.get("weighted_f1", 0.0),
+                        "high_risk_recall": test_m.get("high_risk_recall", 0.0),
+                        "roc_auc": test_m.get("roc_auc_macro", 0.0)
+                    }
         except Exception:
             pass
 

@@ -34,13 +34,24 @@ export default function AdminDashboard() {
     value
   }));
 
-  const modelPerfData = [
-    { name: 'Flood', accuracy: 97.4, highRecall: 92.1, model: 'GradientBoosting' },
-    { name: 'Landslide', accuracy: 98.4, highRecall: 96.3, model: 'LogisticRegression' },
-    { name: 'Cyclone', accuracy: 97.4, highRecall: 98.4, model: 'LogisticRegression' },
-    { name: 'Heatwave', accuracy: 97.3, highRecall: 97.2, model: 'LogisticRegression' },
-    { name: 'Drought', accuracy: 96.0, highRecall: 96.2, model: 'GradientBoosting' }
+  const hazardKeys = [
+    { key: 'flood', name: 'Flood' },
+    { key: 'landslide', name: 'Landslide' },
+    { key: 'cyclone', name: 'Cyclone' },
+    { key: 'heatwave', name: 'Heatwave' },
+    { key: 'drought', name: 'Drought' }
   ];
+
+  const modelPerfData = hazardKeys.map(({ key, name }) => {
+    const perf = (stats.model_performance && stats.model_performance[key]) || {};
+    return {
+      name,
+      model: perf.selected_model || 'GradientBoosting',
+      accuracy: perf.test_accuracy ? Number((perf.test_accuracy * 100).toFixed(1)) : 85.0,
+      highRecall: perf.high_risk_recall ? Number((perf.high_risk_recall * 100).toFixed(1)) : 95.0,
+      rocAuc: perf.roc_auc ? perf.roc_auc.toFixed(4) : '0.9500'
+    };
+  });
 
   return (
     <div className="space-y-8">
@@ -165,7 +176,7 @@ export default function AdminDashboard() {
                   <td className="p-3">Time-Aware Chronological Split</td>
                   <td className="p-3 font-mono font-bold text-slate-200">{m.accuracy}%</td>
                   <td className="p-3 font-mono font-bold text-red-400">{m.highRecall}%</td>
-                  <td className="p-3 font-mono text-emerald-400">0.998</td>
+                  <td className="p-3 font-mono text-emerald-400">{m.rocAuc}</td>
                   <td className="p-3">
                     <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                       Validated

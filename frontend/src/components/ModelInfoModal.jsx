@@ -48,7 +48,7 @@ export default function ModelInfoModal() {
             </span>
           </div>
           <div className="text-xs space-y-1 text-slate-300">
-            <div><span className="text-slate-400">Selected Model:</span> <span className="font-mono text-cyan-400">Logistic Regression</span></div>
+            <div><span className="text-slate-400">Selected Model:</span> <span className="font-mono text-cyan-400">RandomForest Classifier</span></div>
             <div><span className="text-slate-400">Dataset Source:</span> NASA Global Landslide Catalog & USGS Topography</div>
             <div><span className="text-slate-400">License:</span> NASA Open Data Policy</div>
             <div><span className="text-slate-400">Key Features:</span> 3d/7d Antecedent Rain, Slope Degree, Soil Saturation</div>
@@ -67,7 +67,7 @@ export default function ModelInfoModal() {
             </span>
           </div>
           <div className="text-xs space-y-1 text-slate-300">
-            <div><span className="text-slate-400">Selected Model:</span> <span className="font-mono text-cyan-400">Logistic Regression</span></div>
+            <div><span className="text-slate-400">Selected Model:</span> <span className="font-mono text-cyan-400">RandomForest Classifier</span></div>
             <div><span className="text-slate-400">Dataset Source:</span> NOAA IBTrACS Archives</div>
             <div><span className="text-slate-400">License:</span> Public Domain</div>
             <div><span className="text-slate-400">Key Features:</span> Wind Speed 10m, Surface Pressure Drop, 6h Rain</div>
@@ -86,7 +86,7 @@ export default function ModelInfoModal() {
             </span>
           </div>
           <div className="text-xs space-y-1 text-slate-300">
-            <div><span className="text-slate-400">Selected Models:</span> <span className="font-mono text-cyan-400">LogisticRegression & GradientBoosting</span></div>
+            <div><span className="text-slate-400">Selected Models:</span> <span className="font-mono text-cyan-400">GradientBoosting Classifiers</span></div>
             <div><span className="text-slate-400">Dataset Source:</span> NOAA GHCN-D & US Drought Monitor</div>
             <div><span className="text-slate-400">License:</span> Public Domain / CC BY 4.0</div>
             <div><span className="text-slate-400">Key Features:</span> Max Temp, Humidity, Hot Streak Days, Rain Deficit</div>
