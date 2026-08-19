@@ -27,6 +27,21 @@ export const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
   const [resendCooldown, setResendCooldown] = useState(0);
   const [otpExpiryTimer, setOtpExpiryTimer] = useState(600); // 10 minutes
 
+  // Reset form state function (declared before useEffect usage to prevent TDZ ReferenceError)
+  const resetForm = () => {
+    setError('');
+    setSuccessMsg('');
+    setName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setOtp(['', '', '', '', '', '']);
+    setCaptchaToken('');
+    setCaptchaError('');
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+  };
+
   useEffect(() => {
     setView(initialView);
     resetForm();
@@ -49,22 +64,6 @@ export const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
     }
     return () => clearInterval(timer);
   }, [view, otpExpiryTimer]);
-
-  if (!isOpen) return null;
-
-  const resetForm = () => {
-    setError('');
-    setSuccessMsg('');
-    setName('');
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setOtp(['', '', '', '', '', '']);
-    setCaptchaToken('');
-    setCaptchaError('');
-    setShowPassword(false);
-    setShowConfirmPassword(false);
-  };
 
   // Password Requirement Checklist Evaluation
   const pwdCriteria = {
@@ -301,6 +300,8 @@ export const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
