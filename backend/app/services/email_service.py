@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 def verify_smtp_connection_safe() -> Dict[str, Any]:
     """
     Safely tests runtime SMTP connection steps without exposing passwords or credentials.
+    Supports both Port 465 (SMTP_SSL) and Port 587 (SMTP + STARTTLS).
     Returns structured diagnostic status dictionary.
     """
     has_host = bool(settings.SMTP_HOST and settings.SMTP_HOST.strip())
@@ -52,17 +53,24 @@ def verify_smtp_connection_safe() -> Dict[str, Any]:
         return diag
 
     try:
-        logger.info(f"[SMTP DIAGNOSTIC] Testing connection to {settings.SMTP_HOST}:{settings.SMTP_PORT}...")
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=10) as server:
+        port_num = int(settings.SMTP_PORT)
+        logger.info(f"[SMTP DIAGNOSTIC] Testing connection to {settings.SMTP_HOST}:{port_num}...")
+        
+        if port_num == 465:
+            server = smtplib.SMTP_SSL(settings.SMTP_HOST, port_num, timeout=10)
+            diag["connection_test"]["stage"] = "CONNECT_SSL"
+        else:
+            server = smtplib.SMTP(settings.SMTP_HOST, port_num, timeout=10)
             diag["connection_test"]["stage"] = "CONNECT"
             if settings.SMTP_TLS:
                 server.starttls()
                 diag["connection_test"]["stage"] = "STARTTLS"
-            
+
+        with server:
             server.login(settings.SMTP_USERNAME, settings.SMTP_PASSWORD)
             diag["connection_test"]["stage"] = "AUTHENTICATION"
             diag["connection_test"]["status"] = "SUCCESS"
-            diag["connection_test"]["detail"] = f"Successfully connected, TLS handshaked, and authenticated with {settings.SMTP_HOST}:{settings.SMTP_PORT}"
+            diag["connection_test"]["detail"] = f"Successfully connected, SSL/TLS handshaked, and authenticated with {settings.SMTP_HOST}:{port_num}"
             return diag
     except smtplib.SMTPAuthenticationError as auth_err:
         diag["connection_test"]["status"] = "FAILED"
@@ -90,6 +98,7 @@ def verify_smtp_connection_safe() -> Dict[str, Any]:
 def send_otp_email(to_email: str, otp: str, purpose: str = "registration") -> Tuple[bool, str]:
     """
     Sends 6-digit OTP to user's email via SMTP service.
+    Supports both Port 465 (SMTP_SSL) and Port 587 (SMTP + STARTTLS).
     Returns Tuple[bool, str]: (success, status_message)
     """
     subject = "AI Disaster Risk System - Email Verification Code"
@@ -133,7 +142,8 @@ def send_otp_email(to_email: str, otp: str, purpose: str = "registration") -> Tu
         return False, msg
 
     try:
-        logger.info(f"Attempting real SMTP email delivery to {to_email} via {settings.SMTP_HOST}:{settings.SMTP_PORT}...")
+        port_num = int(settings.SMTP_PORT)
+        logger.info(f"Attempting real SMTP email delivery to {to_email} via {settings.SMTP_HOST}:{port_num}...")
         msg_mime = MIMEMultipart("alternative")
         msg_mime["Subject"] = subject
         msg_mime["From"] = settings.EMAIL_FROM or settings.SMTP_USERNAME
@@ -144,13 +154,18 @@ def send_otp_email(to_email: str, otp: str, purpose: str = "registration") -> Tu
         msg_mime.attach(text_part)
         msg_mime.attach(html_part)
 
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=12) as server:
+        if port_num == 465:
+            server = smtplib.SMTP_SSL(settings.SMTP_HOST, port_num, timeout=12)
+        else:
+            server = smtplib.SMTP(settings.SMTP_HOST, port_num, timeout=12)
             if settings.SMTP_TLS:
                 server.starttls()
+
+        with server:
             server.login(settings.SMTP_USERNAME, settings.SMTP_PASSWORD)
             server.sendmail(msg_mime["From"], [to_email], msg_mime.as_string())
 
-        logger.info(f"[SUCCESS] OTP verification email dispatched to {to_email} via SMTP server {settings.SMTP_HOST}.")
+        logger.info(f"[SUCCESS] OTP verification email dispatched to {to_email} via SMTP server {settings.SMTP_HOST}:{port_num}.")
         return True, "Email dispatched successfully via SMTP."
     except smtplib.SMTPAuthenticationError as auth_err:
         err_msg = f"Gmail/SMTP authentication failed (Code {auth_err.smtp_code}). Please verify SMTP_USERNAME and App Password."
