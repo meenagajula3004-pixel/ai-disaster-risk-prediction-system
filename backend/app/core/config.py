@@ -17,7 +17,11 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
 
-    # SMTP / Email Service Configuration
+    # Resend HTTP API Email Configuration (Primary Production Email Provider)
+    RESEND_API_KEY: str = ""
+    RESEND_FROM_EMAIL: str = "onboarding@resend.dev"
+
+    # Legacy SMTP / Email Service Configuration (Optional Fallback)
     SMTP_HOST: str = ""
     SMTP_PORT: int = 587
     SMTP_USERNAME: str = ""
@@ -65,10 +69,10 @@ class Settings(BaseSettings):
             "http://localhost:4173",
             "http://127.0.0.1:4173"
         ]
-        
-        for d in default_origins:
-            if d not in parsed:
-                parsed.append(d)
+        for default_origin in default_origins:
+            if default_origin not in parsed:
+                parsed.append(default_origin)
+                
         return parsed
 
 settings = Settings()
