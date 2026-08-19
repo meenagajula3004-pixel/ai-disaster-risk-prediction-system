@@ -48,7 +48,7 @@ async def register_user(req: UserRegisterRequest, db: Session = Depends(get_db))
         raise HTTPException(status_code=400, detail=captcha_err)
 
     try:
-        # 4. Check for existing user
+        # 4. Check for existing user & directly activate account
         existing_user = db.query(UserDB).filter(UserDB.email == clean_email).first()
         if existing_user:
             if existing_user.is_verified:
@@ -57,43 +57,25 @@ async def register_user(req: UserRegisterRequest, db: Session = Depends(get_db))
                     detail="An account with this email address already exists. Please log in."
                 )
             else:
-                # Update password and full name for unverified existing user
                 existing_user.full_name = req.full_name.strip()
                 existing_user.hashed_password = hash_password(req.password)
+                existing_user.is_verified = True
+                existing_user.is_active = True
                 existing_user.updated_at = datetime.datetime.utcnow()
+                user_record = existing_user
         else:
             user_record = UserDB(
                 email=clean_email,
                 full_name=req.full_name.strip(),
                 hashed_password=hash_password(req.password),
                 role="user",
-                is_verified=False,
+                is_verified=True,
                 is_active=True
             )
             db.add(user_record)
 
-        # 5. Invalidate any existing unused OTPs for this email and purpose safely
-        existing_otps = db.query(OTPRecordDB).filter(
-            OTPRecordDB.email == clean_email,
-            OTPRecordDB.purpose == "registration",
-            OTPRecordDB.is_used == False
-        ).all()
-        for old_otp in existing_otps:
-            old_otp.is_used = True
-
-        # 6. Generate secure 6-digit OTP & store hash
-        otp_code = generate_secure_otp()
-        otp_entry = OTPRecordDB(
-            email=clean_email,
-            otp_hash=hash_otp(otp_code),
-            purpose="registration",
-            expires_at=datetime.datetime.utcnow() + timedelta(minutes=10),
-            resend_available_at=datetime.datetime.utcnow() + timedelta(seconds=60),
-            attempts=0,
-            is_used=False
-        )
-        db.add(otp_entry)
         db.commit()
+        db.refresh(user_record)
     except HTTPException:
         db.rollback()
         raise
@@ -105,19 +87,15 @@ async def register_user(req: UserRegisterRequest, db: Session = Depends(get_db))
             detail=f"Failed to process registration record: {str(err)}"
         )
 
-    # 7. Send OTP via email
-    email_ok, email_msg = send_otp_email(clean_email, otp_code, purpose="registration")
-    if not email_ok:
-        logger.error(f"Registration accepted for {clean_email}, but SMTP delivery failed: {email_msg}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Registration record created, but verification email delivery failed: {email_msg}"
-        )
+    # 5. Generate JWT token for direct login
+    access_token = create_access_token(data={"sub": str(user_record.id), "email": user_record.email, "role": user_record.role})
 
     return {
         "status": "success",
-        "message": f"Registration details accepted. Verification code sent to {clean_email}.",
-        "email": clean_email
+        "message": f"Registration successful! Welcome, {user_record.full_name}.",
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": UserOut.model_validate(user_record)
     }
 
 @router.post("/auth/verify-otp")
@@ -181,11 +159,11 @@ def verify_otp(req: OTPVerifyRequest, db: Session = Depends(get_db)):
         if not user:
             raise HTTPException(status_code=404, detail="Associated user account not found.")
 
-        if req.purpose == "registration":
-            user.is_verified = True
-            user.updated_at = datetime.datetime.utcnow()
-            db.commit()
+        user.is_verified = True
+        user.updated_at = datetime.datetime.utcnow()
+        db.commit()
 
+        if req.purpose == "registration":
             access_token = create_access_token(data={"sub": str(user.id), "email": user.email, "role": user.role})
             return {
                 "status": "success",
@@ -195,7 +173,6 @@ def verify_otp(req: OTPVerifyRequest, db: Session = Depends(get_db)):
                 "user": UserOut.model_validate(user)
             }
         else:
-            db.commit()
             return {
                 "status": "success",
                 "message": "OTP verified successfully. You may now reset your password."
@@ -225,9 +202,6 @@ async def resend_otp(req: OTPResendRequest, db: Session = Depends(get_db)):
         user = db.query(UserDB).filter(UserDB.email == clean_email).first()
         if not user:
             raise HTTPException(status_code=404, detail="No account registered with this email address.")
-
-        if req.purpose == "registration" and user.is_verified:
-            raise HTTPException(status_code=400, detail="Account is already verified. Please log in.")
 
         # Rate Limit / Cooldown Check: 60 Seconds
         last_otp = (
@@ -329,17 +303,15 @@ async def login_user(req: UserLoginRequest, db: Session = Depends(get_db)):
             db.commit()
             raise HTTPException(status_code=401, detail="Invalid email or password.")
 
+        # Auto-verify active user account on successful login
+        if not user.is_verified:
+            user.is_verified = True
+
         # Reset failed attempts on success
         user.failed_login_attempts = 0
         user.locked_until = None
         user.last_login_at = datetime.datetime.utcnow()
         db.commit()
-
-        if not user.is_verified:
-            raise HTTPException(
-                status_code=400,
-                detail="Your email is not verified yet. Please verify your OTP."
-            )
 
         access_token = create_access_token(data={"sub": str(user.id), "email": user.email, "role": user.role})
         return {
@@ -372,7 +344,7 @@ async def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_
 
     try:
         user = db.query(UserDB).filter(UserDB.email == clean_email).first()
-        if not user or not user.is_verified:
+        if not user:
             return {
                 "status": "success",
                 "message": "If an active account exists for this email address, a password reset verification code has been sent."
@@ -472,6 +444,7 @@ def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
         user.hashed_password = hash_password(req.new_password)
         user.failed_login_attempts = 0
         user.locked_until = None
+        user.is_verified = True
         user.updated_at = datetime.datetime.utcnow()
         otp_record.is_used = True
 
