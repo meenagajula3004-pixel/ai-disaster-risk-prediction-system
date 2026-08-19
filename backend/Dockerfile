@@ -14,13 +14,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy backend requirements & install
-COPY requirements.txt .
+COPY backend/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy ML pipeline and Backend code
-COPY ../ml /app/ml
-COPY ../data /app/data
-COPY . /app/backend
+# Copy ML pipeline, data, and backend code
+COPY ml /app/ml
+COPY data /app/data
+COPY backend /app/backend
 
 EXPOSE 8000
 
