@@ -87,15 +87,10 @@ async def register_user(req: UserRegisterRequest, db: Session = Depends(get_db))
             detail=f"Failed to process registration record: {str(err)}"
         )
 
-    # 5. Generate JWT token for direct login
-    access_token = create_access_token(data={"sub": str(user_record.id), "email": user_record.email, "role": user_record.role})
-
     return {
         "status": "success",
-        "message": f"Registration successful! Welcome, {user_record.full_name}.",
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user": UserOut.model_validate(user_record)
+        "message": "Registration successful! Please login to continue.",
+        "email": user_record.email
     }
 
 @router.post("/auth/verify-otp")

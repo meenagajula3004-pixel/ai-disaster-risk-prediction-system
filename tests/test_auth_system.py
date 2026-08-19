@@ -57,8 +57,8 @@ def test_full_auth_direct_registration_flow():
     res_reg = client.post("/api/v1/auth/register", json=reg_payload)
     assert res_reg.status_code == 200, res_reg.json()
     reg_data = res_reg.json()
-    assert "access_token" in reg_data
-    assert "Registration successful" in reg_data["message"]
+    assert "access_token" not in reg_data
+    assert "Registration successful! Please login to continue." in reg_data["message"]
 
     # Verify activated user state in DB
     user_db = db.query(UserDB).filter(UserDB.email == test_email).first()

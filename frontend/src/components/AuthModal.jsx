@@ -125,13 +125,14 @@ export const AuthModal = ({ isOpen, onClose, initialView = 'login' }) => {
         captcha_token: captchaToken
       });
 
-      if (res.access_token && res.user) {
-        loginSuccess(res.access_token, res.user);
-        onClose();
-      } else {
-        setSuccessMsg(res.message || 'Registration successful! Please log in.');
-        setView('login');
-      }
+      const registeredEmail = email.trim();
+      setPassword('');
+      setConfirmPassword('');
+      setCaptchaToken('');
+      setCaptchaError('');
+      setSuccessMsg(res.message || 'Registration Successful! Please login to continue.');
+      setEmail(registeredEmail);
+      setView('login');
     } catch (err) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
     } finally {
