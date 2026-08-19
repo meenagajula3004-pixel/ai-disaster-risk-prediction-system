@@ -13,14 +13,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy backend requirements & install
-COPY backend/requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy requirements & install (works with both root context and backend/ context)
+COPY requirements.txt* backend/requirements.txt* /app/
+RUN if [ -f /app/requirements.txt ]; then \
+        pip install --no-cache-dir -r /app/requirements.txt; \
+    elif [ -f /app/backend/requirements.txt ]; then \
+        pip install --no-cache-dir -r /app/backend/requirements.txt; \
+    fi
 
-# Copy ML pipeline, data, and backend code
-COPY ml /app/ml
-COPY data /app/data
-COPY backend /app/backend
+# Copy codebase
+COPY . /app/
 
 EXPOSE 8000
 
