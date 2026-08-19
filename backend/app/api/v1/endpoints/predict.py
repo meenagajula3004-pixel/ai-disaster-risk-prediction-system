@@ -4,8 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from backend.app.core.database import get_db
+from backend.app.core.dependencies import get_optional_current_user
 from backend.app.models.schemas import PredictionRequest, PredictionResponse
-from backend.app.models.db_models import PredictionRecordDB, EnvironmentalObservationDB
+from backend.app.models.db_models import PredictionRecordDB, EnvironmentalObservationDB, UserDB
 from backend.app.services.weather_service import fetch_live_environmental_data
 from backend.app.services.ml_service import predict_multi_disaster_risk
 
@@ -19,7 +20,8 @@ SAFETY_DISCLAIMER = (
 @router.post("/predict", response_model=PredictionResponse)
 async def predict_multi_disaster(
     req: PredictionRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: UserDB = Depends(get_optional_current_user)
 ):
     try:
         # 1. Fetch live environmental metrics
@@ -47,6 +49,7 @@ async def predict_multi_disaster(
             db.add(obs)
 
             pred_record = PredictionRecordDB(
+                user_id=current_user.id if current_user else None,
                 location_name=req.location_name,
                 latitude=req.latitude,
                 longitude=req.longitude,

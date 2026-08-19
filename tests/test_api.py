@@ -1,6 +1,12 @@
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
+
 from backend.app.main import app
+from backend.app.core.database import get_db
+from backend.app.models.db_models import UserDB
+from backend.app.api.v1.endpoints.auth import create_access_token
+from backend.app.services.security_service import hash_password
 
 client = TestClient(app)
 
@@ -43,7 +49,34 @@ def test_what_if_endpoint():
     assert data["is_simulation"] is True
 
 def test_admin_stats_endpoint():
-    response = client.get("/api/v1/admin/stats")
+    # 1. Unauthenticated request must return 401
+    unauth_response = client.get("/api/v1/admin/stats")
+    assert unauth_response.status_code == 401
+
+    # 2. Authenticated Admin request must return 200
+    db: Session = next(get_db())
+    admin_user = db.query(UserDB).filter(UserDB.email == "admin@example.com").first()
+    if not admin_user:
+        admin_user = UserDB(
+            email="admin@example.com",
+            hashed_password=hash_password("AdminPass@2026"),
+            full_name="System Admin",
+            role="admin",
+            is_verified=True,
+            is_active=True
+        )
+        db.add(admin_user)
+        db.commit()
+        db.refresh(admin_user)
+    else:
+        admin_user.role = "admin"
+        admin_user.is_verified = True
+        db.commit()
+
+    token = create_access_token({"sub": admin_user.email, "user_id": admin_user.id, "role": "admin"})
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = client.get("/api/v1/admin/stats", headers=headers)
     assert response.status_code == 200
     data = response.json()
     assert "total_predictions" in data

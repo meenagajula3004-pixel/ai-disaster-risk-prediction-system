@@ -12,10 +12,22 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///./disaster_risk.db"
     USE_SQLITE_FALLBACK: bool = True
 
-    # Security
-    SECRET_KEY: str = "dev-secret-key-disaster-risk-ai-system"
+    # Auth & Security
+    SECRET_KEY: str = "dev-secret-key-disaster-risk-ai-system-2026"
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
+
+    # SMTP / Email Service Configuration
+    SMTP_HOST: str = ""
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    EMAIL_FROM: str = "noreply@ai-disaster-risk.org"
+    SMTP_TLS: bool = True
+
+    # CAPTCHA Configuration
+    CAPTCHA_SITE_KEY: str = ""
+    CAPTCHA_SECRET_KEY: str = ""
 
     # External Data Services
     OPEN_METEO_BASE_URL: str = "https://api.open-meteo.com/v1"

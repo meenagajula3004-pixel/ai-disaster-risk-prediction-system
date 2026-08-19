@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import DashboardPage from './pages/DashboardPage';
 import WhatIfSimulator from './components/WhatIfSimulator';
 import AdminDashboard from './components/AdminDashboard';
 import ModelInfoModal from './components/ModelInfoModal';
+import AuthModal from './components/AuthModal';
+import UserHistoryModal from './components/UserHistoryModal';
+import { AuthProvider } from './context/AuthContext';
 
-export default function App() {
+function MainApp() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedLocation, setSelectedLocation] = useState({
     name: 'Bhimavaram, Andhra Pradesh, India',
@@ -14,6 +17,11 @@ export default function App() {
     longitude: 81.5212,
   });
   const [isLocating, setIsLocating] = useState(false);
+
+  // Modal States
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authInitialView, setAuthInitialView] = useState('login');
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
 
   const handleDetectLocation = () => {
     if (navigator.geolocation) {
@@ -38,6 +46,11 @@ export default function App() {
     }
   };
 
+  const handleOpenAuth = (view = 'login') => {
+    setAuthInitialView(view);
+    setAuthModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-[#090D16] text-slate-100 font-['Plus_Jakarta_Sans',sans-serif]">
       
@@ -47,6 +60,8 @@ export default function App() {
         setActiveTab={setActiveTab}
         onDetectLocation={handleDetectLocation}
         isLocating={isLocating}
+        onOpenAuth={handleOpenAuth}
+        onOpenHistory={() => setHistoryModalOpen(true)}
       />
 
       {/* Main Content Body */}
@@ -83,9 +98,30 @@ export default function App() {
 
       </main>
 
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialView={authInitialView}
+      />
+
+      {/* Prediction History Modal */}
+      <UserHistoryModal
+        isOpen={historyModalOpen}
+        onClose={() => setHistoryModalOpen(false)}
+      />
+
       {/* Footer */}
       <Footer />
 
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <MainApp />
+    </AuthProvider>
   );
 }

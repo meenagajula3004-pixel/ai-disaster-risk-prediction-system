@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
+import datetime
 
 class LocationSearchItem(BaseModel):
     name: str
@@ -46,8 +47,8 @@ class WhatIfRequest(BaseModel):
     latitude: float
     longitude: float
     location_name: Optional[str] = "Simulated Location"
-    simulated_rainfall_change_pct: float = 0.0  # e.g., +20%
-    simulated_temp_change_celsius: float = 0.0  # e.g., +2.5
+    simulated_rainfall_change_pct: float = 0.0
+    simulated_temp_change_celsius: float = 0.0
     simulated_humidity_change_pct: float = 0.0
     simulated_wind_change_pct: float = 0.0
 
@@ -78,15 +79,66 @@ class AdminStatsResponse(BaseModel):
     recent_activity: List[Dict[str, Any]]
     model_performance: Dict[str, Any]
 
-class UserCreate(BaseModel):
-    email: str
-    password: str
-    full_name: Optional[str] = None
+# --- Authentication & User Management Schemas ---
 
-class UserLogin(BaseModel):
+class UserRegisterRequest(BaseModel):
+    full_name: str = Field(..., min_length=2, max_length=100)
     email: str
     password: str
+    confirm_password: str
+    captcha_token: Optional[str] = None
+
+class OTPVerifyRequest(BaseModel):
+    email: str
+    otp: str = Field(..., min_length=6, max_length=6)
+    purpose: str = "registration"  # "registration" or "password_reset"
+
+class OTPResendRequest(BaseModel):
+    email: str
+    purpose: str = "registration"
+    captcha_token: Optional[str] = None
+
+class UserLoginRequest(BaseModel):
+    email: str
+    password: str
+    captcha_token: Optional[str] = None
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+    captcha_token: Optional[str] = None
+
+class ResetPasswordRequest(BaseModel):
+    email: str
+    otp: str = Field(..., min_length=6, max_length=6)
+    new_password: str
+    confirm_password: str
+
+class UserOut(BaseModel):
+    id: int
+    email: str
+    full_name: Optional[str] = None
+    role: str = "user"
+    is_verified: bool = False
+    is_active: bool = True
+    created_at: Optional[datetime.datetime] = None
+
+    class Config:
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    user: Optional[UserOut] = None
+
+class PredictionHistoryItem(BaseModel):
+    id: int
+    location_name: str
+    latitude: float
+    longitude: float
+    primary_risk: str
+    primary_level: str
+    primary_probability: float
+    created_at: datetime.datetime
+
+    class Config:
+        from_attributes = True

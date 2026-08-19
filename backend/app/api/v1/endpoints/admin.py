@@ -1,19 +1,23 @@
 import os
 import json
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func, distinct
 
 from backend.app.core.database import get_db
+from backend.app.core.dependencies import get_current_admin
 from backend.app.models.db_models import PredictionRecordDB, UserDB, SystemLogDB
-from backend.app.models.schemas import AdminStatsResponse
+from backend.app.models.schemas import AdminStatsResponse, UserOut
 
 router = APIRouter()
 
 ML_METRICS_FILE = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "..", "ml", "metrics", "v31_evaluation_report.json")
 
 @router.get("/admin/stats", response_model=AdminStatsResponse)
-def get_admin_dashboard_stats(db: Session = Depends(get_db)):
+def get_admin_dashboard_stats(
+    db: Session = Depends(get_db),
+    current_admin: UserDB = Depends(get_current_admin)
+):
     try:
         total_preds = db.query(func.count(PredictionRecordDB.id)).scalar() or 0
         high_risk_preds = db.query(func.count(PredictionRecordDB.id)).filter(PredictionRecordDB.primary_level == "HIGH").scalar() or 0
@@ -92,3 +96,12 @@ def get_admin_dashboard_stats(db: Session = Depends(get_db)):
         "recent_activity": recent_act,
         "model_performance": ml_perf
     }
+
+@router.get("/admin/users", response_model=list[UserOut])
+def get_registered_users_list(
+    db: Session = Depends(get_db),
+    current_admin: UserDB = Depends(get_current_admin)
+):
+    """Admin-only endpoint to list registered users. Plaintext passwords & OTP hashes are excluded."""
+    users = db.query(UserDB).order_by(UserDB.created_at.desc()).all()
+    return [UserOut.model_validate(u) for u in users]

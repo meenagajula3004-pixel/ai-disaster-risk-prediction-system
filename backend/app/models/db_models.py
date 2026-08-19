@@ -1,5 +1,6 @@
 import datetime
-from sqlalchemy import Column, Integer, String, Float, DateTime, Text, JSON
+from sqlalchemy import Column, Integer, String, Float, DateTime, Text, JSON, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
 from backend.app.core.database import Base
 
 class UserDB(Base):
@@ -9,7 +10,29 @@ class UserDB(Base):
     email = Column(String(255), unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
     full_name = Column(String(255), nullable=True)
-    role = Column(String(50), default="user")
+    role = Column(String(50), default="user")  # "user" or "admin"
+    is_verified = Column(Boolean, default=False, nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    failed_login_attempts = Column(Integer, default=0, nullable=False)
+    locked_until = Column(DateTime, nullable=True)
+    last_login_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+    # Relationships
+    predictions = relationship("PredictionRecordDB", back_populates="user")
+
+class OTPRecordDB(Base):
+    __tablename__ = "otp_records"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), index=True, nullable=False)
+    otp_hash = Column(String(255), nullable=False)
+    purpose = Column(String(50), nullable=False)  # "registration" or "password_reset"
+    expires_at = Column(DateTime, nullable=False)
+    attempts = Column(Integer, default=0, nullable=False)
+    is_used = Column(Boolean, default=False, nullable=False)
+    resend_available_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 class LocationDB(Base):
@@ -44,6 +67,7 @@ class PredictionRecordDB(Base):
     __tablename__ = "prediction_records"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
     location_name = Column(String(255), nullable=False)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
@@ -58,6 +82,9 @@ class PredictionRecordDB(Base):
     environmental_json = Column(JSON, nullable=True)
     disclaimer = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    # Relationships
+    user = relationship("UserDB", back_populates="predictions")
 
 class SystemLogDB(Base):
     __tablename__ = "system_logs"

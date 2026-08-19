@@ -7,9 +7,22 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 12000,
+  timeout: 15000,
 });
 
+// Request interceptor to attach JWT token if available
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Location & Weather APIs
 export const searchLocationsAPI = async (query) => {
   try {
     const response = await apiClient.get('/api/v1/location/search', {
@@ -64,7 +77,7 @@ export const fetchAdminStatsAPI = async () => {
     return response.data;
   } catch (error) {
     console.error('Admin stats fetch error:', error);
-    return null;
+    throw error;
   }
 };
 
@@ -78,6 +91,48 @@ export const fetchHistoryAPI = async (locationName) => {
     console.error('History fetch error:', error);
     return [];
   }
+};
+
+// --- AUTHENTICATION & USER MANAGEMENT APIS ---
+
+export const registerUserAPI = async (payload) => {
+  const response = await apiClient.post('/api/v1/auth/register', payload);
+  return response.data;
+};
+
+export const verifyOtpAPI = async (payload) => {
+  const response = await apiClient.post('/api/v1/auth/verify-otp', payload);
+  return response.data;
+};
+
+export const resendOtpAPI = async (payload) => {
+  const response = await apiClient.post('/api/v1/auth/resend-otp', payload);
+  return response.data;
+};
+
+export const loginUserAPI = async (payload) => {
+  const response = await apiClient.post('/api/v1/auth/login', payload);
+  return response.data;
+};
+
+export const forgotPasswordAPI = async (payload) => {
+  const response = await apiClient.post('/api/v1/auth/forgot-password', payload);
+  return response.data;
+};
+
+export const resetPasswordAPI = async (payload) => {
+  const response = await apiClient.post('/api/v1/auth/reset-password', payload);
+  return response.data;
+};
+
+export const fetchUserProfileAPI = async () => {
+  const response = await apiClient.get('/api/v1/auth/me');
+  return response.data;
+};
+
+export const fetchUserHistoryAPI = async () => {
+  const response = await apiClient.get('/api/v1/history/user');
+  return response.data;
 };
 
 export default apiClient;
