@@ -5,7 +5,7 @@ from ml.preprocess import FEATURE_COLUMNS, DISASTER_TARGETS, time_aware_split
 from backend.app.services.ml_service import predict_multi_disaster_risk
 
 def test_feature_columns_count():
-    assert len(FEATURE_COLUMNS) == 15
+    assert len(FEATURE_COLUMNS) == 17
 
 def test_disaster_targets_count():
     assert len(DISASTER_TARGETS) == 5

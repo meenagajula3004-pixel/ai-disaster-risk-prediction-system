@@ -1,0 +1,73 @@
+{
+  "dataset_name": "V3.1 Authoritative Historical Multi-Hazard Dataset",
+  "total_records": 1200,
+  "total_independent_events": 49,
+  "formula_derived_labels_identified": 0,
+  "temporal_coverage": "2005-07-19 to 2024-08-11",
+  "event_split_counts": {
+    "train_events": 34,
+    "val_events": 7,
+    "test_events": 8
+  },
+  "event_split_ids": {
+    "train_events": [
+      "Mumbai Great Deluge 2005",
+      "Hurricane Katrina - New Orleans",
+      "Hurricane Sandy - New York",
+      "Kedarnath Debris Flow 2013",
+      "Typhoon Haiyan - Tacloban Philippines",
+      "Malin Pune Landslide 2014",
+      "Cyclone Hudhud - Vizag India",
+      "Telangana AP Heatwave 46.5\u00b0C",
+      "Darjeeling Hill Landslide 2015",
+      "Chennai Extreme Floods 2015",
+      "Marathwada Latur Water Drought 2016",
+      "Cyclone Vardah - Chennai India",
+      "Hurricane Harvey - Houston Texas",
+      "Hurricane Irma - Florida Keys",
+      "Hurricane Maria - Puerto Rico",
+      "Kerala Great Flood 2018",
+      "Cyclone Gaja - Tamil Nadu",
+      "Cyclone Fani - Puri India",
+      "Bihar Kosi River Flood 2019",
+      "Paris Record Heatwave 42.6\u00b0C",
+      "Typhoon Hagibis - Tokyo Japan",
+      "Super Cyclone Amphan - Bengal",
+      "Pettimudi Wayanad Landslide 2020",
+      "Hyderabad Deluge 2020",
+      "Cyclone Nivar - Puducherry",
+      "Cyclone Tauktae - Mumbai Gujarat",
+      "Cyclone Yaas - Odisha West Bengal",
+      "US Pacific NW Heat Dome 44.0\u00b0C",
+      "Atami Japan Debris Flow 2021",
+      "European Ahr Valley Flood 2021",
+      "California Exceptional Drought 2021",
+      "Hurricane Ida - Louisiana",
+      "Cyclone Gulab - AP Odisha",
+      "Typhoon Rai - Philippines"
+    ],
+    "val_events": [
+      "North India Heatwave 44.2\u00b0C",
+      "Cyclone Asani - AP Coast",
+      "UP Heatwave 46.8\u00b0C",
+      "Assam Brahmaputra Floods 2022",
+      "Noney Manipur Railway Landslide 2022",
+      "European Severe Heatwave 45.3\u00b0C",
+      "Pakistan Megaflood Sindh 2022"
+    ],
+    "test_events": [
+      "Hurricane Ian - Fort Myers FL",
+      "Cyclone Mandous - Mamallapuram",
+      "Cyclone Biparjoy - Gujarat Kutch",
+      "Delhi Yamuna Flood 2023",
+      "Typhoon Doksuri - Fujian China",
+      "Shimla Himachal Landslide 2023",
+      "Cyclone Michaung - Chennai AP",
+      "Chooralmala Wayanad Landslide 2024"
+    ]
+  },
+  "feature_columns": 17,
+  "target_columns": 5,
+  "missing_values": 0,
+  "duplicate_events": 0
+}

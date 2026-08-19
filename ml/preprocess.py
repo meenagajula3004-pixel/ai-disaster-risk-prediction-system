@@ -13,7 +13,8 @@ FEATURE_COLUMNS = [
     "temperature", "humidity", "surface_pressure", "wind_speed",
     "elevation", "slope_degree", "rainfall_1h", "rainfall_3h",
     "rainfall_6h", "rainfall_12h", "rainfall_24h", "rainfall_3d",
-    "rainfall_7d", "soil_moisture", "hot_days_streak"
+    "rainfall_7d", "soil_moisture", "hot_days_streak",
+    "delta_wind_12h", "delta_pressure_12h"
 ]
 
 DISASTER_TARGETS = {

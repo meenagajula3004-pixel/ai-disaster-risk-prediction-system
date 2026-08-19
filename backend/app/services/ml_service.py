@@ -88,6 +88,8 @@ def predict_multi_disaster_risk(
     slope = 15.0 if elevation > 200.0 else 5.0
     soil_moisture = min(1.0, max(0.05, (r7d / 150.0) + (humidity / 200.0)))
     hot_streak = max(0, int((temp - 32.0) / 2.0)) if temp > 35.0 else 0
+    delta_w = round(wind * 0.22, 2)
+    delta_p = round(pressure - (1013.25 - (wind * 0.30)), 2)
 
     feature_dict = {
         "temperature": temp,
@@ -104,7 +106,9 @@ def predict_multi_disaster_risk(
         "rainfall_3d": r3d,
         "rainfall_7d": r7d,
         "soil_moisture": soil_moisture,
-        "hot_days_streak": hot_streak
+        "hot_days_streak": hot_streak,
+        "delta_wind_12h": delta_w,
+        "delta_pressure_12h": delta_p
     }
 
     feature_array = np.array([[feature_dict[c] for c in FEATURE_COLUMNS]])

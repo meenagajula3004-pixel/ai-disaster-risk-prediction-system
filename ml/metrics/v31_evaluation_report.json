@@ -1,0 +1,360 @@
+{
+  "dataset_used": "v31_authoritative_historical_dataset.csv",
+  "total_records": 1200,
+  "split": "Event-Aware Grouped Chronological 70% Train / 15% Val / 15% Test",
+  "event_split_counts": {
+    "train_events": 34,
+    "val_events": 7,
+    "test_events": 8
+  },
+  "hazards": {
+    "flood": {
+      "selected_model": "GradientBoosting",
+      "candidate_comparison": {
+        "LogisticRegression": {
+          "val_accuracy": 0.6571,
+          "val_macro_f1": 0.3531,
+          "val_weighted_f1": 0.6089,
+          "val_high_risk_recall": 1.0,
+          "val_roc_auc": 0.8731,
+          "composite_score": 0.6568
+        },
+        "RandomForest": {
+          "val_accuracy": 0.8229,
+          "val_macro_f1": 0.4987,
+          "val_weighted_f1": 0.8097,
+          "val_high_risk_recall": 1.0,
+          "val_roc_auc": 0.8896,
+          "composite_score": 0.7604
+        },
+        "GradientBoosting": {
+          "val_accuracy": 0.8457,
+          "val_macro_f1": 0.5718,
+          "val_weighted_f1": 0.8388,
+          "val_high_risk_recall": 1.0,
+          "val_roc_auc": 0.8984,
+          "composite_score": 0.7946
+        }
+      },
+      "test_metrics": {
+        "accuracy": 0.84,
+        "precision_macro": 0.6322,
+        "recall_macro": 0.6439,
+        "f1_macro": 0.6222,
+        "weighted_f1": 0.8603,
+        "high_risk_recall": 1.0,
+        "roc_auc_macro": 0.9694,
+        "per_class_recall": {
+          "0": 0.8039,
+          "1": 0.9167,
+          "2": 0.8548,
+          "3": 0.0
+        }
+      },
+      "test_class_distribution": {
+        "0": 102,
+        "2": 62,
+        "1": 36
+      },
+      "confusion_matrix": [
+        [
+          82,
+          20,
+          0,
+          0
+        ],
+        [
+          1,
+          33,
+          0,
+          2
+        ],
+        [
+          0,
+          8,
+          53,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "landslide": {
+      "selected_model": "RandomForest",
+      "candidate_comparison": {
+        "LogisticRegression": {
+          "val_accuracy": 0.76,
+          "val_macro_f1": 0.357,
+          "val_weighted_f1": 0.7675,
+          "val_high_risk_recall": 0.0,
+          "val_roc_auc": 0.8066,
+          "composite_score": 0.4378
+        },
+        "RandomForest": {
+          "val_accuracy": 0.8629,
+          "val_macro_f1": 0.5454,
+          "val_weighted_f1": 0.8374,
+          "val_high_risk_recall": 0.0,
+          "val_roc_auc": 0.7728,
+          "composite_score": 0.5162
+        },
+        "GradientBoosting": {
+          "val_accuracy": 0.8743,
+          "val_macro_f1": 0.5561,
+          "val_weighted_f1": 0.8483,
+          "val_high_risk_recall": 0.0,
+          "val_roc_auc": 0.6738,
+          "composite_score": 0.5078
+        }
+      },
+      "test_metrics": {
+        "accuracy": 0.855,
+        "precision_macro": 0.4033,
+        "recall_macro": 0.4732,
+        "f1_macro": 0.4259,
+        "weighted_f1": 0.8353,
+        "high_risk_recall": 1.0,
+        "roc_auc_macro": 0.8451,
+        "per_class_recall": {
+          "0": 0.8929,
+          "1": 1.0,
+          "2": 0.0,
+          "3": 0.0
+        }
+      },
+      "test_class_distribution": {
+        "0": 140,
+        "1": 46,
+        "2": 7,
+        "3": 7
+      },
+      "confusion_matrix": [
+        [
+          125,
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          46,
+          0,
+          0
+        ],
+        [
+          0,
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          7,
+          0,
+          0
+        ]
+      ]
+    },
+    "cyclone": {
+      "selected_model": "RandomForest",
+      "candidate_comparison": {
+        "LogisticRegression": {
+          "val_accuracy": 0.8914,
+          "val_macro_f1": 0.4567,
+          "val_weighted_f1": 0.8951,
+          "val_high_risk_recall": 0.0,
+          "val_roc_auc": 0.6879,
+          "composite_score": 0.4868
+        },
+        "RandomForest": {
+          "val_accuracy": 0.8743,
+          "val_macro_f1": 0.4058,
+          "val_weighted_f1": 0.8833,
+          "val_high_risk_recall": 0.0,
+          "val_roc_auc": 0.8442,
+          "composite_score": 0.4895
+        },
+        "GradientBoosting": {
+          "val_accuracy": 0.8571,
+          "val_macro_f1": 0.2633,
+          "val_weighted_f1": 0.8774,
+          "val_high_risk_recall": 0.0,
+          "val_roc_auc": 0.8295,
+          "composite_score": 0.4359
+        }
+      },
+      "test_metrics": {
+        "accuracy": 0.7,
+        "precision_macro": 0.6434,
+        "recall_macro": 0.6594,
+        "f1_macro": 0.6452,
+        "weighted_f1": 0.6909,
+        "high_risk_recall": 0.9143,
+        "roc_auc_macro": 0.8623,
+        "per_class_recall": {
+          "0": 0.8817,
+          "1": 0.5417,
+          "2": 0.7143,
+          "3": 0.5
+        }
+      },
+      "test_class_distribution": {
+        "0": 93,
+        "1": 72,
+        "3": 28,
+        "2": 7
+      },
+      "confusion_matrix": [
+        [
+          82,
+          11,
+          0,
+          0
+        ],
+        [
+          23,
+          39,
+          2,
+          8
+        ],
+        [
+          1,
+          0,
+          5,
+          1
+        ],
+        [
+          2,
+          10,
+          2,
+          14
+        ]
+      ]
+    },
+    "heatwave": {
+      "selected_model": "GradientBoosting",
+      "candidate_comparison": {
+        "LogisticRegression": {
+          "val_accuracy": 0.4686,
+          "val_macro_f1": 0.3293,
+          "val_weighted_f1": 0.5382,
+          "val_high_risk_recall": 1.0,
+          "val_roc_auc": 0.6414,
+          "composite_score": 0.596
+        },
+        "RandomForest": {
+          "val_accuracy": 0.6057,
+          "val_macro_f1": 0.4145,
+          "val_weighted_f1": 0.6577,
+          "val_high_risk_recall": 1.0,
+          "val_roc_auc": 0.727,
+          "composite_score": 0.6686
+        },
+        "GradientBoosting": {
+          "val_accuracy": 0.6229,
+          "val_macro_f1": 0.4265,
+          "val_weighted_f1": 0.6746,
+          "val_high_risk_recall": 1.0,
+          "val_roc_auc": 0.7225,
+          "composite_score": 0.6763
+        }
+      },
+      "test_metrics": {
+        "accuracy": 0.985,
+        "precision_macro": 0.9741,
+        "recall_macro": 0.9897,
+        "f1_macro": 0.9815,
+        "weighted_f1": 0.9851,
+        "high_risk_recall": 0.9897,
+        "roc_auc_macro": 0.5,
+        "per_class_recall": {
+          "0": 0.9793,
+          "1": 1.0
+        }
+      },
+      "test_class_distribution": {
+        "0": 145,
+        "1": 55
+      },
+      "confusion_matrix": [
+        [
+          142,
+          3
+        ],
+        [
+          0,
+          55
+        ]
+      ]
+    },
+    "drought": {
+      "selected_model": "GradientBoosting",
+      "candidate_comparison": {
+        "LogisticRegression": {
+          "val_accuracy": 0.6457,
+          "val_macro_f1": 0.4662,
+          "val_weighted_f1": 0.7179,
+          "val_high_risk_recall": 1.0,
+          "val_roc_auc": 0.9112,
+          "composite_score": 0.7293
+        },
+        "RandomForest": {
+          "val_accuracy": 0.6457,
+          "val_macro_f1": 0.4579,
+          "val_weighted_f1": 0.6986,
+          "val_high_risk_recall": 1.0,
+          "val_roc_auc": 0.943,
+          "composite_score": 0.7264
+        },
+        "GradientBoosting": {
+          "val_accuracy": 0.6343,
+          "val_macro_f1": 0.4635,
+          "val_weighted_f1": 0.7015,
+          "val_high_risk_recall": 1.0,
+          "val_roc_auc": 0.9527,
+          "composite_score": 0.7305
+        }
+      },
+      "test_metrics": {
+        "accuracy": 0.995,
+        "precision_macro": 0.9697,
+        "recall_macro": 0.9861,
+        "f1_macro": 0.977,
+        "weighted_f1": 0.9951,
+        "high_risk_recall": 1.0,
+        "roc_auc_macro": 0.9995,
+        "per_class_recall": {
+          "0": 1.0,
+          "1": 0.9583,
+          "2": 1.0
+        }
+      },
+      "test_class_distribution": {
+        "0": 166,
+        "1": 24,
+        "2": 10
+      },
+      "confusion_matrix": [
+        [
+          166,
+          0,
+          0
+        ],
+        [
+          0,
+          23,
+          1
+        ],
+        [
+          0,
+          0,
+          10
+        ]
+      ]
+    }
+  }
+}
