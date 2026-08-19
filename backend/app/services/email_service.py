@@ -1,5 +1,6 @@
 import smtplib
 import logging
+import socket
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from backend.app.core.config import settings
@@ -9,7 +10,7 @@ logger = logging.getLogger(__name__)
 def send_otp_email(to_email: str, otp: str, purpose: str = "registration") -> bool:
     """
     Sends 6-digit OTP to user's email via SMTP service.
-    If SMTP credentials are not configured, logs event to secure backend server console.
+    If SMTP credentials are not configured, logs diagnostic status to server console.
     """
     subject = "AI Disaster Risk System - Email Verification Code"
     if purpose == "password_reset":
@@ -42,9 +43,14 @@ def send_otp_email(to_email: str, otp: str, purpose: str = "registration") -> bo
     </html>
     """
 
-    # If SMTP settings are fully configured
-    if settings.SMTP_HOST and settings.SMTP_USERNAME and settings.SMTP_PASSWORD:
+    has_host = bool(settings.SMTP_HOST and settings.SMTP_HOST.strip())
+    has_user = bool(settings.SMTP_USERNAME and settings.SMTP_USERNAME.strip())
+    has_pass = bool(settings.SMTP_PASSWORD and settings.SMTP_PASSWORD.strip())
+
+    # Check if SMTP is configured
+    if has_host and has_user and has_pass:
         try:
+            logger.info(f"Attempting real SMTP email delivery to {to_email} via {settings.SMTP_HOST}:{settings.SMTP_PORT}...")
             msg = MIMEMultipart("alternative")
             msg["Subject"] = subject
             msg["From"] = settings.EMAIL_FROM or settings.SMTP_USERNAME
@@ -55,20 +61,32 @@ def send_otp_email(to_email: str, otp: str, purpose: str = "registration") -> bo
             msg.attach(text_part)
             msg.attach(html_part)
 
-            with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=10) as server:
+            with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=12) as server:
                 if settings.SMTP_TLS:
                     server.starttls()
                 server.login(settings.SMTP_USERNAME, settings.SMTP_PASSWORD)
                 server.sendmail(msg["From"], [to_email], msg.as_string())
 
-            logger.info(f"Successfully sent OTP email to {to_email} via SMTP server {settings.SMTP_HOST}.")
+            logger.info(f"[SUCCESS] OTP verification email dispatched to {to_email} via SMTP server {settings.SMTP_HOST}.")
             return True
+        except smtplib.SMTPAuthenticationError as auth_err:
+            logger.error(f"[SMTP AUTH ERROR] Gmail/SMTP Authentication failed for user {settings.SMTP_USERNAME}: Code {auth_err.smtp_code} - {auth_err.smtp_error}")
+        except smtplib.SMTPConnectError as conn_err:
+            logger.error(f"[SMTP CONNECT ERROR] Could not connect to {settings.SMTP_HOST}:{settings.SMTP_PORT} - {conn_err}")
+        except socket.timeout:
+            logger.error(f"[SMTP TIMEOUT ERROR] Connection to {settings.SMTP_HOST}:{settings.SMTP_PORT} timed out after 12 seconds.")
         except Exception as e:
-            logger.error(f"Failed to send SMTP email to {to_email}: {e}")
+            logger.error(f"[SMTP UNEXPECTED ERROR] Failed to send email to {to_email}: {type(e).__name__} - {e}")
+    else:
+        logger.warning(
+            f"[SMTP NOT CONFIGURED] Real email delivery skipped because SMTP environment variables are missing. "
+            f"Configured: SMTP_HOST={has_host}, SMTP_USERNAME={has_user}, SMTP_PASSWORD={has_pass}. "
+            f"Please set SMTP_HOST, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, and EMAIL_FROM in Render Environment variables."
+        )
 
-    # Fallback log for local development or when SMTP is not configured
+    # Console logging fallback for development or unconfigured SMTP
     logger.info("==========================================================")
-    logger.info(f"[SECURE BACKEND EMAIL DISPATCHER] To: {to_email}")
+    logger.info(f"[SECURE BACKEND DISPATCHER FALLBACK] To: {to_email}")
     logger.info(f"[OTP VERIFICATION CODE]: {otp} (Purpose: {purpose}, Exp: 10 mins)")
     logger.info("==========================================================")
     return True
