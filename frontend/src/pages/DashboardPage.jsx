@@ -6,7 +6,7 @@ import DisasterRiskCards from '../components/DisasterRiskCards';
 import RiskMap from '../components/RiskMap';
 import SHAPExplainerWidget from '../components/SHAPExplainerWidget';
 import { predictDisasterRiskAPI } from '../services/api';
-import { Activity, ShieldAlert, AlertCircle } from 'lucide-react';
+import { Activity, ShieldAlert, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function DashboardPage({ selectedLocation, setSelectedLocation }) {
   const [prediction, setPrediction] = useState(null);
@@ -43,6 +43,12 @@ export default function DashboardPage({ selectedLocation, setSelectedLocation })
     }
   };
 
+  const handleRetry = () => {
+    if (selectedLocation) {
+      loadPrediction(selectedLocation.latitude, selectedLocation.longitude, selectedLocation.name);
+    }
+  };
+
   return (
     <div className="space-y-8">
       
@@ -72,17 +78,29 @@ export default function DashboardPage({ selectedLocation, setSelectedLocation })
         <div className="glass-panel p-12 rounded-2xl text-center space-y-4">
           <Activity className="h-8 w-8 text-cyan-400 animate-spin mx-auto" />
           <p className="text-sm font-semibold text-slate-300">
-            Querying Open-Meteo Weather APIs & Executing 5 ML Hazard Models...
+            Fetching Open-Meteo Environmental Data & Running ML Models...
+          </p>
+          <p className="text-xs text-slate-400 max-w-md mx-auto">
+            (Note: On initial load, cloud backend spin-up may take up to 20 seconds. Please hold on...)
           </p>
         </div>
       )}
 
       {/* Error Message */}
       {error && (
-        <div className="glass-panel p-6 rounded-2xl border border-red-500/50 bg-red-950/30 text-center space-y-2">
+        <div className="glass-panel p-6 rounded-2xl border border-red-500/50 bg-red-950/30 text-center space-y-4">
           <AlertCircle className="h-8 w-8 text-red-400 mx-auto" />
           <div className="text-sm font-bold text-red-200">{error}</div>
-          <p className="text-xs text-slate-400">Live environmental data is temporarily unavailable or input location is invalid.</p>
+          <p className="text-xs text-slate-400">
+            The server may be starting up or environmental APIs experienced a brief delay. Click below to retry.
+          </p>
+          <button
+            onClick={handleRetry}
+            className="inline-flex items-center space-x-2 px-4 py-2 bg-red-600/80 hover:bg-red-500 text-white rounded-lg text-xs font-semibold transition-colors"
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            <span>Retry Prediction</span>
+          </button>
         </div>
       )}
 
